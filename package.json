@@ -1,0 +1,29 @@
+{
+  "name": "english-grammar-teaching-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/test.mjs",
+    "test:browser": "node tests/browser.mjs",
+    "install:ci": "node scripts/install.mjs"
+  },
+  "dependencies": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "docx": "9.5.1",
+    "pptxgenjs": "4.0.1",
+    "lucide-react": "0.468.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "7.1.12",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "esbuild": "0.25.11",
+    "playwright": "1.56.1"
+  }
+}

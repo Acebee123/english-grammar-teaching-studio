@@ -1,0 +1,13 @@
+import {useState} from 'react';
+import {ChevronLeft,ChevronRight} from 'lucide-react';
+import type {WorkedExample,LocalLessonProject} from './schema';
+import {topics,getTopic,sentence} from './content';
+import {transform} from './engine';
+import {languageText} from './exports';
+export function Transformation({example,topicId,lang}:{example:WorkedExample;topicId:string;lang:LocalLessonProject['language']}){
+ const [kind,setKind]=useState<'negative'|'question'|'tense'>('negative'),[target,setTarget]=useState(getTopic(topicId).compareWith),[step,setStep]=useState(2);
+ const changed=kind==='tense'?getTopic(target).examples[example.plural?1:0]:null;
+ const result=changed?sentence(changed):transform(example,topicId,kind as 'negative'|'question').after;
+ const text=changed?languageText({en:'Changing tense/aspect changes the time viewpoint or context. The subject, action and object stay the same; the auxiliary, verb form and time phrase may change. This is a new scenario, not an equivalent paraphrase.',bm:'Perubahan kala/aspek mengubah sudut masa atau konteks. Subjek, perbuatan dan objek kekal; kata kerja bantu, bentuk kata kerja dan frasa masa mungkin berubah. Ini situasi baharu, bukan parafrasa yang sama makna.'},lang):languageText(transform(example,topicId,kind as 'negative'|'question').explanation,lang);
+ return <div className="transformation"><div className="transformation-bar"><div className="segmented">{(['negative','question','tense'] as const).map(k=><button key={k} className={kind===k?'active':''} onClick={()=>{setKind(k);setStep(0);}}>{k==='negative'?'Negative':k==='question'?'Question':'Tense / aspect'}</button>)}</div>{kind==='tense'&&<select aria-label="Target tense or aspect" value={target} onChange={e=>{setTarget(e.target.value);setStep(0);}}>{topics.filter(t=>t.id!==topicId).map(t=><option key={t.id} value={t.id}>{t.title}</option>)}</select>}</div><span className="eyebrow">{step===0?'1 · ORIGINAL':step===1?'2 · WHAT CHANGES':'3 · RESULT & MEANING'}</span><strong>{step===0?sentence(example):step===1?changed?changed.tokens.map(t=><span key={t.id} className={example.tokens.find(x=>x.id===t.id)?.text!==t.text?'changed-form':''}>{t.text} </span>):result:result}</strong>{step>=1&&<p>{text}</p>}{changed&&step===2&&<p>{languageText(changed.context,lang)}</p>}<div className="row-actions"><button aria-label="Previous transformation step" disabled={step===0} onClick={()=>setStep(step-1)}><ChevronLeft size={15}/> Previous</button><button aria-label="Next transformation step" disabled={step===2} onClick={()=>setStep(step+1)}>Next step <ChevronRight size={15}/></button><small>{step+1} / 3</small></div></div>
+}

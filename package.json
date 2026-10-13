@@ -9,6 +9,9 @@
     "build": "node scripts/build.mjs",
     "test": "node scripts/test.mjs",
     "test:browser": "node tests/browser.mjs",
+    "test:floating": "node tests/floating-browser.mjs",
+    "test:journey": "node scripts/test-journey.mjs",
+    "test:journey:browser": "node tests/journey-browser.mjs",
     "install:ci": "node scripts/install.mjs"
   },
   "dependencies": {

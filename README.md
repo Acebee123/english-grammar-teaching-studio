@@ -2,9 +2,15 @@
 
 Stage 0 foundation and Stage 1 working Tenses & Aspects prototype. React + TypeScript + Vite, with no mandatory backend, paid API, account or runtime CDN.
 
+The application now opens with the proposal-based **Tenses Teaching Aids - AceBee** journey: landing artwork and the supplied logo video, time-category bubbles, aspect bubbles, root-verb transformations, and illustrated examples with animated timelines. Six action contexts are available. **Teaching tools** opens the full retained studio for the selected tense. See `docs/PROPOSAL-REDESIGN.md` for the workflow, source references and grammar corrections.
+
 The Canvas First theme follows the supplied classroom reference: a pale blue workspace, rounded white teaching canvas, navy headings, pastel grammar tokens, a warm reading illustration and a yellow Remember card. The floating dock provides playback, highlighting, annotation, settings and focus mode; topic and demonstration navigation remain at the bottom. Topics start collapsed to leave more space for teaching.
 
 The illustration and Nunito font are bundled locally and embedded in the offline HTML. The illustration was generated for this project. Nunito's SIL Open Font License is included in `src/assets/Nunito-OFL.txt`.
+
+The feature bar floats above the canvas and the teaching controls float below it. Each minimises independently to a circular button, retaining the selected feature, active ink tool and settings. Both remain inside the app's fullscreen element. Reserved toolbar space prevents overlap with teaching content and stays fixed during animation.
+
+Highlight draws translucent yellow marks; Annotate draws handwritten strokes. Eraser removes portions of either with a 12–96 px circular cursor and size slider. It edits only the ink layer. Undo and redo restore complete drawing, erasing or clearing gestures. The original automatic verb emphasis remains available as **Settings → Highlight verb phrase**. Pen/highlighter metadata is included in version-one lesson backups, with older backups still supported.
 
 ## Open the application
 
@@ -23,6 +29,9 @@ Open the Local URL printed by Vite. Alternatively use pnpm 11.25 with the includ
 npm run build
 npm test
 npm run test:browser
+npm run test:floating
+npm run test:journey
+npm run test:journey:browser
 ```
 
 Browser tests require current Google Chrome installed. The tests run both the self-contained file with networking disabled and the actual static build from a local HTTP server, including service-worker offline reload. See the verification limitations in `docs/TEST-RESULTS.md`.
@@ -54,6 +63,9 @@ For online AI, configure an HTTPS OpenAI-compatible chat-completions **proxy** e
 
 ```text
 src/
+  TensesJourney.tsx   Proposal-based landing and five-screen teaching journey
+  journey-content.ts Six reviewed verb contexts and 13 tense/aspect paths
+  journey.css        Bubble navigation, tap feedback and illustrated scene layout
   schema.ts          Typed grammar, curriculum, lesson and AI entities
   content.ts         Original bilingual topics and prepared examples
   engine.ts          Deterministic transformations and schema validation
@@ -66,6 +78,9 @@ src/
   theme.css          Canvas First palette, type, components and responsiveness
   theme-fit.css      Compact teaching toolbar and screen layout adjustments
   assets/            Bundled classroom illustration, Nunito font and licence
+  AnnotationCanvas.tsx Pointer gestures, ink preview and circular eraser cursor
+  annotations.ts     Partial stroke clipping against the swept eraser
+  floating-controls.css Floating toolbar positioning and collapse animations
 scripts/
   build.mjs          Type check, static build, offline package
   offline.mjs        Single-file bundling and service-worker generation

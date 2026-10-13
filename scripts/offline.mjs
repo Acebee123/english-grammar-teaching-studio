@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+let html=fs.readFileSync('dist/index.html','utf8');
+html=html.replace(/<script type="module"[^>]*src="([^"]+)"[^>]*><\/script>/g,(_,p)=>'<script type="module">'+fs.readFileSync(path.join('dist',p),'utf8').replace(/<\/script/gi,'<\\/script')+'</script>');
+html=html.replace(/<link rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/g,(_,p)=>'<style>'+fs.readFileSync(path.join('dist',p),'utf8')+'</style>');
+fs.mkdirSync('offline',{recursive:true});fs.writeFileSync('offline/Grammar-Teaching-Studio.html',html);
+const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name).replaceAll('\\','/').replace(/^dist\//,'./')]);
+const assets=walk('dist').filter(x=>!x.endsWith('sw.js'));
+const version='grammar-studio-'+Date.now();fs.writeFileSync('dist/sw.js',`const CACHE=${JSON.stringify(version)},ASSETS=${JSON.stringify(assets)};self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('grammar-studio-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});self.addEventListener('fetch',e=>{if(e.request.method==='GET'&&new URL(e.request.url).origin===self.location.origin)e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});`);
+console.log('Self-contained offline HTML and static asset cache generated.');

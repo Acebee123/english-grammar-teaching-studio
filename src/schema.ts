@@ -16,7 +16,7 @@ export interface AnswerExplanation {answers:string[];explanation:Bilingual}
 export interface Exercise {id:string;kind:ExerciseKind;prompt:Bilingual;options?:string[];answer:AnswerExplanation}
 export interface GrammarTopic {id:string;title:string;short:string;group:'Present'|'Past'|'Future';mapping:CurriculumMapping;objective:Bilingual;rule:GrammarRule;examples:WorkedExample[];mistake:{wrong:string;correct:string;why:Bilingual};exercises:Exercise[];compareWith:string}
 export interface Lesson {topicId:string;exampleId:string}
-export interface Stroke {points:[number,number][];colour:string}
+export interface Stroke {points:[number,number][];colour:string;kind?:'pen'|'highlight';width?:number}
 export interface CustomExample {id:string;text:string;tokens:SentenceToken[];annotations:GrammaticalAnnotation[]}
 export interface LocalLessonProject {format:'grammar-studio';version:1;id:string;title:string;updatedAt:string;language:'en'|'bm'|'both';level:'simple'|'advanced';sequence:Lesson[];customExamples:CustomExample[];strokes:Stroke[];active:number;step:number}
 export interface AIAnalysisSuggestion {tokens:SentenceToken[];explanation:string;confidence:'uncertain'|'supported'}

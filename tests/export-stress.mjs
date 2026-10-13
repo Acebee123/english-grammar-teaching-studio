@@ -1,0 +1,9 @@
+import '../scripts/windows-path-compat.mjs';
+import {chromium} from 'playwright';
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const ids=['present-simple','present-continuous','present-perfect','present-perfect-continuous','past-simple','past-continuous','past-perfect','past-perfect-continuous','will','going-to','future-continuous','future-perfect','future-perfect-continuous'];
+const p={format:'grammar-studio',version:1,id:'export-stress',title:'Tenses and Aspects Teaching Materials',updatedAt:new Date().toISOString(),language:'both',level:'advanced',sequence:ids.map(id=>({topicId:id,exampleId:id+'-1'})),customExamples:[],strokes:[],active:0,step:3};
+fs.writeFileSync('test-results/exports/stress.grammar.json',JSON.stringify(p));
+const browser=await chromium.launch({channel:'chrome',headless:true});try{const context=await browser.newContext({acceptDownloads:true});await context.setOffline(true);const page=await context.newPage();await page.goto(pathToFileURL(path.resolve('offline/Grammar-Teaching-Studio.html')).href);await page.locator('input[type=file]').setInputFiles('test-results/exports/stress.grammar.json');await page.waitForFunction(()=>document.querySelector('.toast')?.textContent.includes('Lesson restored'));await page.getByRole('button',{name:'Export',exact:false}).first().click();for(const [label,ext]of [['Word document','docx'],['PowerPoint slides','pptx']]){const dl=page.waitForEvent('download');await page.getByRole('button',{name:new RegExp(label)}).click();await (await dl).saveAs('test-results/exports/stress.'+ext);}await page.getByLabel('Close dialog').click();await page.emulateMedia({media:'print'});await page.pdf({path:'test-results/exports/stress.pdf',format:'A4'});console.log('PASS all 13 topics, bilingual advanced DOCX/PPTX/PDF exports with networking disabled');}finally{await browser.close();}
